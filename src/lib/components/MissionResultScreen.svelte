@@ -28,8 +28,6 @@
 		onproceed
 	}: Props = $props();
 
-	let showingDetails = $state(false);
-
 	const passCount = $derived(votes.filter((v) => v.pass).length);
 	const failCount = $derived(votes.filter((v) => !v.pass).length);
 	const needed = $derived(failsRequired(players.length, currentMission));
@@ -66,24 +64,14 @@
 		</div>
 	{/if}
 
-	<button
-		onclick={() => (showingDetails = !showingDetails)}
-		class="text-sm text-zinc-400 underline"
-	>
-		{showingDetails ? 'Hide' : 'Show'} team members
-	</button>
-
-	{#if showingDetails}
-		<div class="flex flex-wrap justify-center gap-2">
-			{#each teamPlayerIds as id}
-				{@const player = players.find((p) => p.id === id)}
-				{#if player}
-					<span class="rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-300">{player.name}</span
-					>
-				{/if}
-			{/each}
-		</div>
-	{/if}
+	<div class="flex flex-wrap justify-center gap-2">
+		{#each teamPlayerIds as id}
+			{@const player = players.find((p) => p.id === id)}
+			{#if player}
+				<span class="rounded-full bg-zinc-800 px-3 py-1 text-sm text-zinc-300">{player.name}</span>
+			{/if}
+		{/each}
+	</div>
 
 	<div class="flex gap-6 text-sm text-zinc-400">
 		<span>Resistance: <strong class="text-blue-400">{resistanceWins}</strong></span>

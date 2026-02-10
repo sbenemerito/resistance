@@ -3,6 +3,7 @@ import {
 	type Player,
 	type Role,
 	type MissionResult,
+	type RejectedTeam,
 	GAME_CONFIGS,
 	failsRequired
 } from './types.js';
@@ -25,11 +26,11 @@ function createInitialState(): GameState {
 		missionResults: [],
 		leaderIndex: 0,
 		selectedTeam: [],
+		rejectedTeams: [],
 		currentVoterIndex: 0,
 		currentMissionVotes: [],
 		resistanceWins: 0,
 		spyWins: 0,
-		spyGuesses: [],
 		winner: null
 	};
 }
@@ -110,12 +111,40 @@ export function createGame() {
 			}
 		},
 
+		get rejectedTeams(): RejectedTeam[] {
+			return state.rejectedTeams;
+		},
+
+		isTeamAlreadyRejected(playerIds: number[]): boolean {
+			const sorted = [...playerIds].sort((a, b) => a - b);
+			return state.rejectedTeams.some((rt) => {
+				const prev = [...rt.playerIds].sort((a, b) => a - b);
+				return prev.length === sorted.length && prev.every((id, i) => id === sorted[i]);
+			});
+		},
+
 		selectTeam(playerIds: number[]) {
 			if (playerIds.length !== requiredTeamSize()) return;
+			if (playerIds.includes(leader().id)) return;
+			if (this.isTeamAlreadyRejected(playerIds)) return;
 			state.selectedTeam = playerIds;
+			state.phase = 'team-approval';
+		},
+
+		approveTeam() {
 			state.currentVoterIndex = 0;
 			state.currentMissionVotes = [];
 			state.phase = 'mission-vote';
+		},
+
+		rejectTeam() {
+			state.rejectedTeams = [
+				...state.rejectedTeams,
+				{ leaderIndex: state.leaderIndex, playerIds: [...state.selectedTeam] }
+			];
+			state.leaderIndex = (state.leaderIndex + 1) % state.players.length;
+			state.selectedTeam = [];
+			state.phase = 'team-selection';
 		},
 
 		submitVote(pass: boolean) {
@@ -149,7 +178,6 @@ export function createGame() {
 
 		proceedFromResult() {
 			if (state.resistanceWins >= 3) {
-				state.spyGuesses = [];
 				state.phase = 'spy-guess';
 				return;
 			}
@@ -163,30 +191,17 @@ export function createGame() {
 			state.currentMission++;
 			state.leaderIndex = (state.leaderIndex + 1) % state.players.length;
 			state.selectedTeam = [];
+			state.rejectedTeams = [];
 			state.currentVoterIndex = 0;
 			state.currentMissionVotes = [];
 			state.phase = 'team-selection';
 		},
 
-		submitSpyGuess(spyId: number, guessedPlayerId: number) {
-			state.spyGuesses = [
-				...state.spyGuesses.filter((g) => g.spyId !== spyId),
-				{ spyId, guessedPlayerId }
-			];
-		},
-
-		finalizeSpyGuess() {
+		submitSpyGuess(guessedPlayerId: number) {
 			const rl = resistanceLeader();
 			if (!rl) return;
 
-			const allSpies = spies();
-			const allGuessed = allSpies.every((s) => state.spyGuesses.some((g) => g.spyId === s.id));
-			if (!allGuessed) return;
-
-			const unanimous =
-				state.spyGuesses.length > 0 && state.spyGuesses.every((g) => g.guessedPlayerId === rl.id);
-
-			state.winner = unanimous ? 'spies' : 'resistance';
+			state.winner = guessedPlayerId === rl.id ? 'spies' : 'resistance';
 			state.phase = 'game-over';
 		},
 

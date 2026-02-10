@@ -3,6 +3,7 @@
 	import Lobby from '$lib/components/Lobby.svelte';
 	import RoleReveal from '$lib/components/RoleReveal.svelte';
 	import TeamSelection from '$lib/components/TeamSelection.svelte';
+	import TeamApproval from '$lib/components/TeamApproval.svelte';
 	import MissionVote from '$lib/components/MissionVote.svelte';
 	import MissionResultScreen from '$lib/components/MissionResultScreen.svelte';
 	import SpyGuess from '$lib/components/SpyGuess.svelte';
@@ -42,8 +43,21 @@
 			leader={game.leader}
 			currentMission={game.state.currentMission}
 			missionResults={game.state.missionResults}
+			rejectedTeams={game.state.rejectedTeams}
 			requiredSize={game.requiredTeamSize}
+			isTeamAlreadyRejected={(ids) => game.isTeamAlreadyRejected(ids)}
 			onselect={(ids) => game.selectTeam(ids)}
+		/>
+	{:else if game.state.phase === 'team-approval'}
+		<TeamApproval
+			players={game.state.players}
+			leader={game.leader}
+			selectedTeam={game.state.selectedTeam}
+			rejectedTeams={game.state.rejectedTeams}
+			currentMission={game.state.currentMission}
+			missionResults={game.state.missionResults}
+			onapprove={() => game.approveTeam()}
+			onreject={() => game.rejectTeam()}
 		/>
 	{:else if game.state.phase === 'mission-vote' && currentVoter}
 		<MissionVote
@@ -68,9 +82,7 @@
 		<SpyGuess
 			players={game.state.players}
 			spies={game.spies}
-			spyGuesses={game.state.spyGuesses}
-			onguess={(spyId, guessedId) => game.submitSpyGuess(spyId, guessedId)}
-			onfinalize={() => game.finalizeSpyGuess()}
+			onguess={(guessedId) => game.submitSpyGuess(guessedId)}
 		/>
 	{:else if game.state.phase === 'game-over' && game.state.winner}
 		<GameOver

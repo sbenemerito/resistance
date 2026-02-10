@@ -4,10 +4,16 @@ export type Phase =
 	| 'lobby'
 	| 'role-reveal'
 	| 'team-selection'
+	| 'team-approval'
 	| 'mission-vote'
 	| 'mission-result'
 	| 'spy-guess'
 	| 'game-over';
+
+export interface RejectedTeam {
+	leaderIndex: number;
+	playerIds: number[];
+}
 
 export interface Player {
 	id: number;
@@ -34,15 +40,13 @@ export interface GameState {
 	missionResults: MissionResult[];
 	leaderIndex: number; // index into players[] — rotates clockwise
 	selectedTeam: number[]; // player ids chosen for current mission
+	rejectedTeams: RejectedTeam[]; // rejected proposals for current mission
 	currentVoterIndex: number; // index into selectedTeam[]
 	currentMissionVotes: { playerId: number; pass: boolean }[];
 
 	// Scoreboard
 	resistanceWins: number;
 	spyWins: number;
-
-	// Spy guess phase
-	spyGuesses: { spyId: number; guessedPlayerId: number }[];
 
 	// Final outcome
 	winner: 'resistance' | 'spies' | null;

@@ -17,7 +17,7 @@
 	{#each config.missionSizes as size, i}
 		{@const result = missionResults.find((r) => r.missionIndex === i)}
 		{@const isCurrent = i === currentMission}
-		{@const needTwo = failsRequired(playerCount, i) === 2}
+		{@const failsNeeded = failsRequired(playerCount, i)}
 		<div class="flex flex-col items-center gap-1">
 			<div
 				class="flex h-12 w-12 items-center justify-center rounded-full text-sm font-bold transition
@@ -31,9 +31,9 @@
 			>
 				{size}
 			</div>
-			{#if needTwo}
-				<span class="text-[10px] text-zinc-500">2 fails</span>
-			{/if}
+			<span class="text-[10px] {failsNeeded > 1 ? 'text-amber-400' : 'text-zinc-500'}"
+				>{failsNeeded}F</span
+			>
 		</div>
 	{/each}
 </div>

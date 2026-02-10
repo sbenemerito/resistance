@@ -2,18 +2,37 @@
 	import type { Player, MissionResult } from '$lib/types.js';
 	import MissionTracker from './MissionTracker.svelte';
 
+	import type { RejectedTeam } from '$lib/types.js';
+
 	interface Props {
 		players: Player[];
 		leader: Player;
 		currentMission: number;
 		missionResults: MissionResult[];
+		rejectedTeams: RejectedTeam[];
 		requiredSize: number;
+		isTeamAlreadyRejected: (playerIds: number[]) => boolean;
 		onselect: (playerIds: number[]) => void;
 	}
 
-	let { players, leader, currentMission, missionResults, requiredSize, onselect }: Props = $props();
+	let {
+		players,
+		leader,
+		currentMission,
+		missionResults,
+		rejectedTeams,
+		requiredSize,
+		isTeamAlreadyRejected,
+		onselect
+	}: Props = $props();
+
+	const selectablePlayers = $derived(players.filter((p) => p.id !== leader.id));
 
 	let selected = $state<Set<number>>(new Set());
+
+	const isDuplicate = $derived(
+		selected.size === requiredSize && isTeamAlreadyRejected([...selected])
+	);
 
 	function toggle(id: number) {
 		const next = new Set(selected);
@@ -27,7 +46,12 @@
 
 	function confirm() {
 		if (selected.size !== requiredSize) return;
+		if (isDuplicate) return;
 		onselect([...selected]);
+	}
+
+	function playerName(id: number): string {
+		return players.find((p) => p.id === id)?.name ?? '';
 	}
 </script>
 
@@ -43,7 +67,7 @@
 	</div>
 
 	<div class="flex flex-col gap-2">
-		{#each players as player}
+		{#each selectablePlayers as player}
 			{@const isSelected = selected.has(player.id)}
 			<button
 				onclick={() => toggle(player.id)}
@@ -63,14 +87,47 @@
 		{/each}
 	</div>
 
+	{#if isDuplicate}
+		<p class="text-center text-sm text-red-400">
+			This team was already rejected. Pick a different combination.
+		</p>
+	{/if}
+
 	<button
 		onclick={confirm}
-		disabled={selected.size !== requiredSize}
+		disabled={selected.size !== requiredSize || isDuplicate}
 		class="rounded-lg px-4 py-3 font-semibold text-white transition
-			{selected.size === requiredSize
+			{selected.size === requiredSize && !isDuplicate
 			? 'bg-blue-600 hover:bg-blue-500'
 			: 'cursor-not-allowed bg-zinc-700 text-zinc-500'}"
 	>
-		Send Team on Mission ({selected.size}/{requiredSize})
+		Propose Team ({selected.size}/{requiredSize})
 	</button>
+
+	{#if rejectedTeams.length > 0}
+		<div class="rounded-lg border border-zinc-700 bg-zinc-800/50 p-4">
+			<div class="mb-3 text-sm font-medium text-zinc-400">Previously Rejected</div>
+			<div class="flex flex-col gap-3">
+				{#each rejectedTeams as rejected, i}
+					<div class="flex flex-col gap-1">
+						<div class="text-xs text-zinc-500">
+							Proposed by {players[rejected.leaderIndex]?.name}
+						</div>
+						<div class="flex flex-wrap gap-1.5">
+							{#each rejected.playerIds as id}
+								<span
+									class="rounded-full border border-red-900/40 bg-red-950/30 px-2.5 py-0.5 text-xs text-red-400"
+								>
+									{playerName(id)}
+								</span>
+							{/each}
+						</div>
+					</div>
+					{#if i < rejectedTeams.length - 1}
+						<hr class="border-zinc-700/50" />
+					{/if}
+				{/each}
+			</div>
+		</div>
+	{/if}
 </div>
