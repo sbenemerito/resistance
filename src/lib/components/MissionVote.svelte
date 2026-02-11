@@ -16,15 +16,27 @@
 
 	let tapped = $state(false);
 	let passOnLeft = $state(Math.random() < 0.5);
+	let pendingVote = $state<boolean | null>(null);
 
 	function showVote() {
 		tapped = true;
 		passOnLeft = Math.random() < 0.5;
 	}
 
-	function vote(pass: boolean) {
+	function selectVote(pass: boolean) {
+		pendingVote = pass;
+	}
+
+	function confirmVote() {
+		if (pendingVote === null) return;
+		const pass = pendingVote;
+		pendingVote = null;
 		tapped = false;
 		onvote(pass);
+	}
+
+	function cancelVote() {
+		pendingVote = null;
 	}
 </script>
 
@@ -45,6 +57,34 @@
 				Ready to Vote
 			</button>
 		</div>
+	{:else if pendingVote !== null}
+		<div class="flex flex-col items-center gap-4">
+			<div class="text-lg text-zinc-300">Confirm your choice</div>
+			<div
+				class="rounded-lg px-8 py-4 text-2xl font-bold {pendingVote
+					? 'bg-blue-600/20 text-blue-400'
+					: 'bg-red-600/20 text-red-400'}"
+			>
+				{pendingVote ? '✓ Pass' : '✗ Fail'}
+			</div>
+			<p class="text-sm text-zinc-400">Are you sure? This cannot be undone.</p>
+			<div class="flex w-full gap-4">
+				<button
+					onclick={cancelVote}
+					class="flex-1 rounded-lg bg-zinc-700 px-6 py-4 text-lg font-semibold text-white transition hover:bg-zinc-600"
+				>
+					Go Back
+				</button>
+				<button
+					onclick={confirmVote}
+					class="flex-1 rounded-lg px-6 py-4 text-lg font-bold text-white transition {pendingVote
+						? 'bg-blue-600 hover:bg-blue-500'
+						: 'bg-red-600 hover:bg-red-500'}"
+				>
+					Confirm
+				</button>
+			</div>
+		</div>
 	{:else}
 		<div class="flex flex-col items-center gap-4">
 			<div class="text-lg text-zinc-300">{voter.name}, choose wisely</div>
@@ -54,26 +94,26 @@
 			<div class="flex w-full gap-4">
 				{#if passOnLeft}
 					<button
-						onclick={() => vote(true)}
+						onclick={() => selectVote(true)}
 						class="flex-1 rounded-lg bg-blue-600 px-6 py-6 text-xl font-bold text-white transition hover:bg-blue-500"
 					>
 						✓ Pass
 					</button>
 					<button
-						onclick={() => vote(false)}
+						onclick={() => selectVote(false)}
 						class="flex-1 rounded-lg bg-red-600 px-6 py-6 text-xl font-bold text-white transition hover:bg-red-500"
 					>
 						✗ Fail
 					</button>
 				{:else}
 					<button
-						onclick={() => vote(false)}
+						onclick={() => selectVote(false)}
 						class="flex-1 rounded-lg bg-red-600 px-6 py-6 text-xl font-bold text-white transition hover:bg-red-500"
 					>
 						✗ Fail
 					</button>
 					<button
-						onclick={() => vote(true)}
+						onclick={() => selectVote(true)}
 						class="flex-1 rounded-lg bg-blue-600 px-6 py-6 text-xl font-bold text-white transition hover:bg-blue-500"
 					>
 						✓ Pass
@@ -81,7 +121,7 @@
 				{/if}
 			</div>
 			<p class="text-xs text-zinc-500">
-				Resistance members should always pass. Spies can choose to sabotage.
+				Resistance members should almost always pass, except for very rare situations. Spies can choose to sabotage.
 			</p>
 		</div>
 	{/if}
