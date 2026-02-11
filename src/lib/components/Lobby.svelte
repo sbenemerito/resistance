@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GAME_CONFIGS } from '$lib/types.js';
+	import InstallBanner from './InstallBanner.svelte';
 
 	interface Props {
 		onstart: (names: string[], timerEnabled: boolean) => void;
@@ -115,4 +116,6 @@
 				GAME_CONFIGS[names.length].spyCount} resistance · 1 resistance leader
 		{/if}
 	</div>
+
+	<InstallBanner />
 </div>
