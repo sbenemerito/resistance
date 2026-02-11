@@ -1,13 +1,17 @@
 <script lang="ts">
 	import type { Player } from '$lib/types.js';
 
+	import Timer from './Timer.svelte';
+
 	interface Props {
 		players: Player[];
 		spies: Player[];
+		timerEnabled: boolean;
+		timerSeconds: number;
 		onguess: (guessedPlayerId: number) => void;
 	}
 
-	let { players, spies, onguess }: Props = $props();
+	let { players, spies, timerEnabled, timerSeconds, onguess }: Props = $props();
 
 	let tapped = $state(false);
 
@@ -40,6 +44,9 @@
 	{:else}
 		<div class="flex flex-col items-center gap-4">
 			<div class="text-lg text-zinc-300">Who is the Resistance Leader?</div>
+			{#if timerEnabled}
+				<Timer durationSeconds={timerSeconds} key="spy-guess" />
+			{/if}
 			<div class="flex w-full flex-col gap-2">
 				{#each nonSpies as player}
 					<button

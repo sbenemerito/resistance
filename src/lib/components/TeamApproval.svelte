@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Player, RejectedTeam, MissionResult } from '$lib/types.js';
 	import MissionTracker from './MissionTracker.svelte';
+	import Timer from './Timer.svelte';
 
 	interface Props {
 		players: Player[];
@@ -9,6 +10,8 @@
 		rejectedTeams: RejectedTeam[];
 		currentMission: number;
 		missionResults: MissionResult[];
+		timerEnabled: boolean;
+		timerSeconds: number;
 		onapprove: () => void;
 		onreject: () => void;
 	}
@@ -20,6 +23,8 @@
 		rejectedTeams,
 		currentMission,
 		missionResults,
+		timerEnabled,
+		timerSeconds,
 		onapprove,
 		onreject
 	}: Props = $props();
@@ -43,6 +48,12 @@
 		</div>
 		<p class="mt-1 text-sm text-zinc-500">Vote outside the app, then record the result here</p>
 	</div>
+
+	{#if timerEnabled}
+		<div class="flex justify-center">
+			<Timer durationSeconds={timerSeconds} key="approval-{currentMission}-{leader.id}" />
+		</div>
+	{/if}
 
 	<div class="flex flex-wrap justify-center gap-2">
 		{#each selectedTeam as id}

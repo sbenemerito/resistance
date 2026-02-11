@@ -6,6 +6,7 @@ export type Phase =
 	| 'team-selection'
 	| 'team-approval'
 	| 'mission-vote'
+	| 'mission-reveal'
 	| 'mission-result'
 	| 'spy-guess'
 	| 'game-over';
@@ -28,9 +29,25 @@ export interface MissionResult {
 	passed: boolean;
 }
 
+export interface TimerConfig {
+	teamSelectionSeconds: number;
+	teamApprovalSeconds: number;
+	missionVoteSeconds: number;
+	spyGuessSeconds: number;
+}
+
+export const DEFAULT_TIMER_CONFIG: TimerConfig = {
+	teamSelectionSeconds: 120,
+	teamApprovalSeconds: 60,
+	missionVoteSeconds: 30,
+	spyGuessSeconds: 180
+};
+
 export interface GameState {
 	phase: Phase;
 	players: Player[];
+	timerEnabled: boolean;
+	timerConfig: TimerConfig;
 
 	// Role reveal
 	revealIndex: number;

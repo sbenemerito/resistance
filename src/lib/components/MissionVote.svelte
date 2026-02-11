@@ -1,14 +1,18 @@
 <script lang="ts">
 	import type { Player } from '$lib/types.js';
 
+	import Timer from './Timer.svelte';
+
 	interface Props {
 		voter: Player;
 		voterIndex: number;
 		totalVoters: number;
+		timerEnabled: boolean;
+		timerSeconds: number;
 		onvote: (pass: boolean) => void;
 	}
 
-	let { voter, voterIndex, totalVoters, onvote }: Props = $props();
+	let { voter, voterIndex, totalVoters, timerEnabled, timerSeconds, onvote }: Props = $props();
 
 	let tapped = $state(false);
 	let passOnLeft = $state(Math.random() < 0.5);
@@ -44,6 +48,9 @@
 	{:else}
 		<div class="flex flex-col items-center gap-4">
 			<div class="text-lg text-zinc-300">{voter.name}, choose wisely</div>
+			{#if timerEnabled}
+				<Timer durationSeconds={timerSeconds} key="vote-{voter.id}-{voterIndex}" />
+			{/if}
 			<div class="flex w-full gap-4">
 				{#if passOnLeft}
 					<button

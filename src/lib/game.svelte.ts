@@ -4,6 +4,8 @@ import {
 	type Role,
 	type MissionResult,
 	type RejectedTeam,
+	type TimerConfig,
+	DEFAULT_TIMER_CONFIG,
 	GAME_CONFIGS,
 	failsRequired
 } from './types.js';
@@ -21,6 +23,8 @@ function createInitialState(): GameState {
 	return {
 		phase: 'lobby',
 		players: [],
+		timerEnabled: false,
+		timerConfig: { ...DEFAULT_TIMER_CONFIG },
 		revealIndex: 0,
 		currentMission: 0,
 		missionResults: [],
@@ -97,9 +101,10 @@ export function createGame() {
 			return resistanceLeader();
 		},
 
-		startGame(names: string[]) {
+		startGame(names: string[], timerEnabled: boolean) {
 			state = createInitialState();
 			state.players = assignRoles(names);
+			state.timerEnabled = timerEnabled;
 			state.leaderIndex = Math.floor(Math.random() * names.length);
 			state.phase = 'role-reveal';
 		},
@@ -153,27 +158,31 @@ export function createGame() {
 			state.currentVoterIndex++;
 
 			if (state.currentVoterIndex >= state.selectedTeam.length) {
-				const fails = state.currentMissionVotes.filter((v) => !v.pass).length;
-				const needed = failsRequired(state.players.length, state.currentMission);
-				const passed = fails < needed;
-
-				const result: MissionResult = {
-					missionIndex: state.currentMission,
-					teamPlayerIds: [...state.selectedTeam],
-					votes: [...state.currentMissionVotes],
-					passed
-				};
-
-				state.missionResults = [...state.missionResults, result];
-
-				if (passed) {
-					state.resistanceWins++;
-				} else {
-					state.spyWins++;
-				}
-
-				state.phase = 'mission-result';
+				state.phase = 'mission-reveal';
 			}
+		},
+
+		revealMissionResult() {
+			const fails = state.currentMissionVotes.filter((v) => !v.pass).length;
+			const needed = failsRequired(state.players.length, state.currentMission);
+			const passed = fails < needed;
+
+			const result: MissionResult = {
+				missionIndex: state.currentMission,
+				teamPlayerIds: [...state.selectedTeam],
+				votes: [...state.currentMissionVotes],
+				passed
+			};
+
+			state.missionResults = [...state.missionResults, result];
+
+			if (passed) {
+				state.resistanceWins++;
+			} else {
+				state.spyWins++;
+			}
+
+			state.phase = 'mission-result';
 		},
 
 		proceedFromResult() {

@@ -2,12 +2,13 @@
 	import { GAME_CONFIGS } from '$lib/types.js';
 
 	interface Props {
-		onstart: (names: string[]) => void;
+		onstart: (names: string[], timerEnabled: boolean) => void;
 	}
 
 	let { onstart }: Props = $props();
 
 	let names = $state<string[]>(['', '', '', '', '']);
+	let timerEnabled = $state(false);
 	let error = $state('');
 
 	function addPlayer() {
@@ -39,7 +40,7 @@
 			return;
 		}
 		error = '';
-		onstart(trimmed);
+		onstart(trimmed, timerEnabled);
 	}
 </script>
 
@@ -81,6 +82,20 @@
 			+ Add Player
 		</button>
 	{/if}
+
+	<label
+		class="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-3"
+	>
+		<input
+			type="checkbox"
+			bind:checked={timerEnabled}
+			class="h-4 w-4 rounded border-zinc-600 bg-zinc-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+		/>
+		<div>
+			<div class="text-sm font-medium text-zinc-300">Enable timers</div>
+			<div class="text-xs text-zinc-500">Soft time limits with sound alerts</div>
+		</div>
+	</label>
 
 	{#if error}
 		<p class="text-center text-sm text-red-400">{error}</p>

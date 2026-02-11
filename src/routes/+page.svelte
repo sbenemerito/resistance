@@ -5,6 +5,7 @@
 	import TeamSelection from '$lib/components/TeamSelection.svelte';
 	import TeamApproval from '$lib/components/TeamApproval.svelte';
 	import MissionVote from '$lib/components/MissionVote.svelte';
+	import MissionReveal from '$lib/components/MissionReveal.svelte';
 	import MissionResultScreen from '$lib/components/MissionResultScreen.svelte';
 	import SpyGuess from '$lib/components/SpyGuess.svelte';
 	import GameOver from '$lib/components/GameOver.svelte';
@@ -30,7 +31,7 @@
 
 <div class="flex min-h-dvh flex-col bg-zinc-900">
 	{#if game.state.phase === 'lobby'}
-		<Lobby onstart={(names) => game.startGame(names)} />
+		<Lobby onstart={(names, timerEnabled) => game.startGame(names, timerEnabled)} />
 	{:else if game.state.phase === 'role-reveal'}
 		<RoleReveal
 			players={game.state.players}
@@ -45,6 +46,8 @@
 			missionResults={game.state.missionResults}
 			rejectedTeams={game.state.rejectedTeams}
 			requiredSize={game.requiredTeamSize}
+			timerEnabled={game.state.timerEnabled}
+			timerSeconds={game.state.timerConfig.teamSelectionSeconds}
 			isTeamAlreadyRejected={(ids) => game.isTeamAlreadyRejected(ids)}
 			onselect={(ids) => game.selectTeam(ids)}
 		/>
@@ -56,6 +59,8 @@
 			rejectedTeams={game.state.rejectedTeams}
 			currentMission={game.state.currentMission}
 			missionResults={game.state.missionResults}
+			timerEnabled={game.state.timerEnabled}
+			timerSeconds={game.state.timerConfig.teamApprovalSeconds}
 			onapprove={() => game.approveTeam()}
 			onreject={() => game.rejectTeam()}
 		/>
@@ -64,7 +69,16 @@
 			voter={currentVoter}
 			voterIndex={game.state.currentVoterIndex}
 			totalVoters={game.state.selectedTeam.length}
+			timerEnabled={game.state.timerEnabled}
+			timerSeconds={game.state.timerConfig.missionVoteSeconds}
 			onvote={(pass) => game.submitVote(pass)}
+		/>
+	{:else if game.state.phase === 'mission-reveal'}
+		<MissionReveal
+			players={game.state.players}
+			currentMission={game.state.currentMission}
+			missionResults={game.state.missionResults}
+			onreveal={() => game.revealMissionResult()}
 		/>
 	{:else if game.state.phase === 'mission-result' && lastResult}
 		<MissionResultScreen
@@ -82,6 +96,8 @@
 		<SpyGuess
 			players={game.state.players}
 			spies={game.spies}
+			timerEnabled={game.state.timerEnabled}
+			timerSeconds={game.state.timerConfig.spyGuessSeconds}
 			onguess={(guessedId) => game.submitSpyGuess(guessedId)}
 		/>
 	{:else if game.state.phase === 'game-over' && game.state.winner}

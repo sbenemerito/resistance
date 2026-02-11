@@ -3,6 +3,7 @@
 	import MissionTracker from './MissionTracker.svelte';
 
 	import type { RejectedTeam } from '$lib/types.js';
+	import Timer from './Timer.svelte';
 
 	interface Props {
 		players: Player[];
@@ -11,6 +12,8 @@
 		missionResults: MissionResult[];
 		rejectedTeams: RejectedTeam[];
 		requiredSize: number;
+		timerEnabled: boolean;
+		timerSeconds: number;
 		isTeamAlreadyRejected: (playerIds: number[]) => boolean;
 		onselect: (playerIds: number[]) => void;
 	}
@@ -22,6 +25,8 @@
 		missionResults,
 		rejectedTeams,
 		requiredSize,
+		timerEnabled,
+		timerSeconds,
 		isTeamAlreadyRejected,
 		onselect
 	}: Props = $props();
@@ -65,6 +70,12 @@
 		</div>
 		<p class="mt-1 text-sm text-zinc-500">Make sure only {leader.name} is looking</p>
 	</div>
+
+	{#if timerEnabled}
+		<div class="flex justify-center">
+			<Timer durationSeconds={timerSeconds} key="team-{currentMission}-{leader.id}" />
+		</div>
+	{/if}
 
 	<div class="flex flex-col gap-2">
 		{#each selectablePlayers as player}
