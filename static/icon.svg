@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#18181b"/>
+  <text x="80" y="400" font-family="system-ui,-apple-system,sans-serif" font-weight="900" font-size="420" fill="#ef4444">R</text>
+  <g transform="translate(310,80) scale(0.42)">
+    <path d="M120 380 L120 260 Q120 220 150 200 L150 120 Q150 100 170 100 L190 100 Q210 100 210 120 L210 180 L210 100 Q210 80 230 80 L250 80 Q270 80 270 100 L270 180 L270 90 Q270 70 290 70 L310 70 Q330 70 330 90 L330 180 L330 110 Q330 90 350 90 L370 90 Q390 90 390 110 L390 280 Q390 340 350 370 L340 380 Z" fill="#fafafa" stroke="#d4d4d8" stroke-width="6" stroke-linejoin="round"/>
+    <rect x="140" y="370" width="220" height="60" rx="10" fill="#e4e4e7" stroke="#d4d4d8" stroke-width="4"/>
+  </g>
+</svg>
