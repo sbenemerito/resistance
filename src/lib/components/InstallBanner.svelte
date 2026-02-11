@@ -50,23 +50,37 @@
 				Install App
 			</button>
 		{:else if isIos}
-			<p class="pr-6 text-sm text-zinc-300">
-				To play offline, tap
-				<svg
-					class="inline-block h-4 w-4 align-text-bottom"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					stroke-width="2"
-					stroke-linecap="round"
-					stroke-linejoin="round"
-				>
-					<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-					<polyline points="16 6 12 2 8 6" />
-					<line x1="12" y1="2" x2="12" y2="15" />
-				</svg>
-				then <strong class="text-white">Add to Home Screen</strong>.
-			</p>
+			<p class="pr-6 text-sm font-medium text-zinc-200">Play offline without internet:</p>
+			<ol class="mt-2 flex flex-col gap-1.5 text-sm text-zinc-400">
+				<li class="flex items-center gap-2">
+					<span
+						class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs text-zinc-300"
+						>1</span
+					>
+					Tap
+					<svg
+						class="inline-block h-5 w-5 shrink-0 text-blue-400"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+					>
+						<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+						<polyline points="16 6 12 2 8 6" />
+						<line x1="12" y1="2" x2="12" y2="15" />
+					</svg>
+					at the bottom of Safari
+				</li>
+				<li class="flex items-center gap-2">
+					<span
+						class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-zinc-700 text-xs text-zinc-300"
+						>2</span
+					>
+					Scroll down and tap <strong class="text-white">Add to Home Screen</strong>
+				</li>
+			</ol>
 		{/if}
 	</div>
 {/if}
