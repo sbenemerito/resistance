@@ -9,6 +9,7 @@
 	import MissionResultScreen from '$lib/components/MissionResultScreen.svelte';
 	import SpyGuess from '$lib/components/SpyGuess.svelte';
 	import GameOver from '$lib/components/GameOver.svelte';
+	import ResetButton from '$lib/components/ResetButton.svelte';
 
 	const game = createGame();
 
@@ -30,8 +31,16 @@
 </script>
 
 <div class="flex min-h-dvh flex-col bg-zinc-900">
+	{#if game.state.phase !== 'lobby'}
+		<ResetButton onreset={() => game.resetToLobby()} />
+	{/if}
+
 	{#if game.state.phase === 'lobby'}
-		<Lobby onstart={(names, timerEnabled) => game.startGame(names, timerEnabled)} />
+		<Lobby
+			initialNames={game.lastPlayerNames}
+			onstart={(names, timerEnabled) => game.startGame(names, timerEnabled)}
+			onclearnames={() => game.clearNames()}
+		/>
 	{:else if game.state.phase === 'role-reveal'}
 		<RoleReveal
 			players={game.state.players}
@@ -108,7 +117,7 @@
 			resistanceWins={game.state.resistanceWins}
 			spyWins={game.state.spyWins}
 			{spyGuessCorrect}
-			onreset={() => game.reset()}
+			onplayagain={() => game.resetToLobby()}
 		/>
 	{/if}
 </div>

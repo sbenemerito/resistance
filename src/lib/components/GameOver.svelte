@@ -9,7 +9,7 @@
 		resistanceWins: number;
 		spyWins: number;
 		spyGuessCorrect: boolean;
-		onreset: () => void;
+		onplayagain: () => void;
 	}
 
 	let {
@@ -19,7 +19,7 @@
 		resistanceWins,
 		spyWins,
 		spyGuessCorrect,
-		onreset
+		onplayagain
 	}: Props = $props();
 
 	const spies = $derived(players.filter((p) => p.role === 'spy'));
@@ -80,7 +80,7 @@
 	</div>
 
 	<button
-		onclick={onreset}
+		onclick={onplayagain}
 		class="rounded-lg bg-blue-600 px-8 py-3 font-semibold text-white transition hover:bg-blue-500"
 	>
 		Play Again

@@ -55,6 +55,7 @@ function assignRoles(names: string[]): Player[] {
 
 export function createGame() {
 	let state = $state<GameState>(createInitialState());
+	let lastPlayerNames = $state<string[]>([]);
 
 	function currentConfig() {
 		return GAME_CONFIGS[state.players.length];
@@ -81,6 +82,10 @@ export function createGame() {
 			return state;
 		},
 
+		get lastPlayerNames() {
+			return lastPlayerNames;
+		},
+
 		get currentConfig() {
 			return currentConfig();
 		},
@@ -102,6 +107,7 @@ export function createGame() {
 		},
 
 		startGame(names: string[], timerEnabled: boolean) {
+			lastPlayerNames = [...names];
 			state = createInitialState();
 			state.players = assignRoles(names);
 			state.timerEnabled = timerEnabled;
@@ -214,8 +220,12 @@ export function createGame() {
 			state.phase = 'game-over';
 		},
 
-		reset() {
+		resetToLobby() {
 			state = createInitialState();
+		},
+
+		clearNames() {
+			lastPlayerNames = [];
 		}
 	};
 }

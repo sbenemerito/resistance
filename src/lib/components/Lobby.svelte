@@ -3,14 +3,28 @@
 	import InstallBanner from './InstallBanner.svelte';
 
 	interface Props {
+		initialNames?: string[];
 		onstart: (names: string[], timerEnabled: boolean) => void;
+		onclearnames: () => void;
 	}
 
-	let { onstart }: Props = $props();
+	let { initialNames = [], onstart, onclearnames }: Props = $props();
 
-	let names = $state<string[]>(['', '', '', '', '']);
+	function buildInitialNames(): string[] {
+		if (initialNames.length >= 5) return [...initialNames];
+		if (initialNames.length > 0) {
+			const padded = [...initialNames];
+			while (padded.length < 5) padded.push('');
+			return padded;
+		}
+		return ['', '', '', '', ''];
+	}
+
+	let names = $state<string[]>(buildInitialNames());
 	let timerEnabled = $state(false);
 	let error = $state('');
+
+	const hasAnyName = $derived(names.some((n) => n.trim() !== ''));
 
 	function addPlayer() {
 		if (names.length >= 10) return;
@@ -108,6 +122,18 @@
 	>
 		Start Game ({names.length} players)
 	</button>
+
+	{#if hasAnyName}
+		<button
+			onclick={() => {
+				names = ['', '', '', '', ''];
+				onclearnames();
+			}}
+			class="rounded-lg border border-zinc-700 px-4 py-2.5 text-sm text-zinc-400 transition hover:border-red-900 hover:text-red-400"
+		>
+			Clear All Names
+		</button>
+	{/if}
 
 	<div class="text-center text-xs text-zinc-500">
 		{#if GAME_CONFIGS[names.length]}
