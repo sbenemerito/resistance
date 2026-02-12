@@ -1,42 +1,27 @@
-# sv
+# The Resistance
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A pass-and-play implementation of [The Resistance](<https://en.wikipedia.org/wiki/The_Resistance_(game)>) board game, with the rules that my friends and I know baked in. Built with SvelteKit, TypeScript, and Tailwind CSS. Deployed to Cloudflare Pages.
 
-## Creating a project
+Play here: [https://resistance.sambenemerito.com](https://resistance.sambenemerito.com)
 
-If you're seeing this, you've probably already done this step. Congrats!
+This is a toy app for playing the game with friends on a single device. No accounts, no server: just open it up and pass the phone around.
 
-```sh
-# create a new project
-npx sv create my-app
-```
+Supports 5–10 players with role reveal, team selection, mission voting, spy guessing, and optional turn timers.
 
-To recreate this project with the same configuration:
+It's also a PWA: install it to your home screen for offline play, no internet required after the first load.
 
-```sh
-# recreate this project
-npx sv create --template minimal --types ts --add prettier eslint tailwindcss="plugins:typography,forms" sveltekit-adapter="adapter:cloudflare+cfTarget:pages" --install npm ./resistance
-```
+Online multiplayer might happen someday, but there are no concrete plans for it.
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Dev
 
 ```sh
+npm install
 npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
 ```
 
-## Building
-
-To create a production version of your app:
+## Build
 
 ```sh
 npm run build
+npm run preview
 ```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
