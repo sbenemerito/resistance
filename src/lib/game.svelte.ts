@@ -7,6 +7,7 @@ import {
 	type TimerConfig,
 	DEFAULT_TIMER_CONFIG,
 	GAME_CONFIGS,
+	MAX_REJECTED_PROPOSALS,
 	failsRequired
 } from './types.js';
 
@@ -137,7 +138,6 @@ export function createGame() {
 		selectTeam(playerIds: number[]) {
 			if (playerIds.length !== requiredTeamSize()) return;
 			if (playerIds.includes(leader().id)) return;
-			if (this.isTeamAlreadyRejected(playerIds)) return;
 			state.selectedTeam = playerIds;
 			state.phase = 'team-approval';
 		},
@@ -153,6 +153,13 @@ export function createGame() {
 				...state.rejectedTeams,
 				{ leaderIndex: state.leaderIndex, playerIds: [...state.selectedTeam] }
 			];
+
+			if (state.rejectedTeams.length >= MAX_REJECTED_PROPOSALS) {
+				state.winner = 'spies';
+				state.phase = 'game-over';
+				return;
+			}
+
 			state.leaderIndex = (state.leaderIndex + 1) % state.players.length;
 			state.selectedTeam = [];
 			state.phase = 'team-selection';

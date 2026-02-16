@@ -57,7 +57,6 @@
 			requiredSize={game.requiredTeamSize}
 			timerEnabled={game.state.timerEnabled}
 			timerSeconds={game.state.timerConfig.teamSelectionSeconds}
-			isTeamAlreadyRejected={(ids) => game.isTeamAlreadyRejected(ids)}
 			onselect={(ids) => game.selectTeam(ids)}
 		/>
 	{:else if game.state.phase === 'team-approval'}

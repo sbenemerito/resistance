@@ -83,8 +83,23 @@ export const GAME_CONFIGS: Record<number, { spyCount: number; missionSizes: numb
 	10: { spyCount: 4, missionSizes: [3, 4, 4, 5, 5] }
 };
 
+/** After this many consecutive rejected proposals in a single mission, spies win. */
+export const MAX_REJECTED_PROPOSALS = 5;
+
 /** Mission 4 (index 3) requires 2 fails for spy win when 7+ players */
 export function failsRequired(playerCount: number, missionIndex: number): number {
 	if (missionIndex === 3 && playerCount >= 7) return 2;
 	return 1;
+}
+
+/** Compute C(n, k) — the number of ways to choose k items from n. */
+export function combinations(n: number, k: number): number {
+	if (k > n || k < 0) return 0;
+	if (k === 0 || k === n) return 1;
+	if (k > n - k) k = n - k;
+	let result = 1;
+	for (let i = 0; i < k; i++) {
+		result = Math.round((result * (n - i)) / (i + 1));
+	}
+	return result;
 }
