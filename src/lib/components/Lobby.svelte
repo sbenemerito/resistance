@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { GAME_CONFIGS } from '$lib/types.js';
+	import HowToPlay from './HowToPlay.svelte';
 	import InstallBanner from './InstallBanner.svelte';
 
 	interface Props {
@@ -23,6 +24,7 @@
 	let names = $state<string[]>(buildInitialNames());
 	let timerEnabled = $state(false);
 	let error = $state('');
+	let showHowToPlay = $state(false);
 
 	const hasAnyName = $derived(names.some((n) => n.trim() !== ''));
 
@@ -63,6 +65,12 @@
 	<div class="text-center">
 		<h1 class="text-3xl font-bold tracking-tight text-white">The Resistance</h1>
 		<p class="mt-2 text-sm text-zinc-400">Enter player names to begin</p>
+		<button
+			onclick={() => (showHowToPlay = true)}
+			class="mt-1 cursor-pointer text-sm text-zinc-400 underline decoration-zinc-600 underline-offset-2 transition hover:text-zinc-200 hover:decoration-zinc-400"
+		>
+			How to play
+		</button>
 	</div>
 
 	<div class="flex flex-col gap-3">
@@ -145,3 +153,7 @@
 
 	<InstallBanner />
 </div>
+
+{#if showHowToPlay}
+	<HowToPlay onclose={() => (showHowToPlay = false)} />
+{/if}

@@ -92,7 +92,7 @@
 		>
 			Proposal {proposalNumber} of {MAX_REJECTED_PROPOSALS}
 			{#if isFinalProposal}
-				— final chance!
+				, final chance!
 			{/if}
 			<span
 				class="group relative inline-flex cursor-help"

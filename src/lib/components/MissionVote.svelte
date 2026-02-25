@@ -42,7 +42,7 @@
 
 <div class="mx-auto flex max-w-md flex-col items-center gap-6 p-6 text-center">
 	<div class="text-sm text-zinc-400">
-		Mission Vote — {voterIndex + 1} of {totalVoters}
+		Mission Vote: {voterIndex + 1} of {totalVoters}
 	</div>
 
 	{#if !tapped}

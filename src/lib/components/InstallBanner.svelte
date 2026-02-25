@@ -42,7 +42,7 @@
 		</button>
 
 		{#if deferredPrompt}
-			<p class="pr-6 text-sm text-zinc-300">Install for offline play — no internet needed.</p>
+			<p class="pr-6 text-sm text-zinc-300">Install for offline play, no internet needed.</p>
 			<button
 				onclick={install}
 				class="mt-2 rounded-md bg-zinc-700 px-3 py-1.5 text-sm font-medium text-white transition hover:bg-zinc-600"

@@ -44,7 +44,7 @@
 
 <div class="mx-auto flex max-w-md flex-col items-center gap-6 p-6 text-center">
 	<div class="text-sm text-zinc-400">
-		Role Reveal — {revealIndex + 1} of {players.length}
+		Role Reveal: {revealIndex + 1} of {players.length}
 	</div>
 
 	{#if !revealed}
@@ -89,7 +89,7 @@
 				onclick={confirm}
 				class="mt-4 rounded-lg bg-blue-600 px-8 py-4 text-lg font-semibold text-white transition hover:bg-blue-500"
 			>
-				Got it — Hide & Pass Phone
+				Got it, hide & pass phone
 			</button>
 		</div>
 	{/if}
